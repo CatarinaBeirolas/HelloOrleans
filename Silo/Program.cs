@@ -28,10 +28,10 @@ static async Task<IHost> StartSiloAsync()
             c.UseLocalhostClustering()
             .Configure<ClusterOptions>(options =>
             {
-                options.ClusterId = "dev";
-                options.ServiceId = "OrleansBasics";
+                options.ClusterId = "DAF";
+                options.ServiceId = "RegisterExample";
             })
-            .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(HelloGrain).Assembly).WithReferences())
+            .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(RegisterGrain).Assembly).WithReferences())
             .ConfigureLogging(logging => logging.AddConsole());
         });
 

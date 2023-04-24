@@ -7,18 +7,16 @@ try
 {
     using (var client = await ConnectClientAsync())
     {
-        await DoClientWorkAsync(client);
-        Console.ReadKey();
+        Console.WriteLine("\n\n My clientID is 0 and I will try to register with the DAF.\n\n");
+        await RegisterClient(client);
+        Console.WriteLine("\n\n Press Enter to terminate...\n\n");
+        Console.ReadLine();
     }
 
     return 0;
 }
 catch (Exception e)
 {
-    Console.WriteLine($"\nException while trying to run client: {e.Message}");
-    Console.WriteLine("Make sure the silo the client is trying to connect to is running.");
-    Console.WriteLine("\nPress any key to exit.");
-    Console.ReadKey();
     return 1;
 }
 
@@ -28,8 +26,8 @@ static async Task<IClusterClient> ConnectClientAsync()
         .UseLocalhostClustering()
         .Configure<ClusterOptions>(options =>
         {
-            options.ClusterId = "dev";
-            options.ServiceId = "OrleansBasics";
+            options.ClusterId = "DAF";
+            options.ServiceId = "RegisterExample";
         })
         .ConfigureLogging(logging => logging.AddConsole())
         .Build();
@@ -40,10 +38,10 @@ static async Task<IClusterClient> ConnectClientAsync()
     return client;
 }
 
-static async Task DoClientWorkAsync(IClusterClient client)
+static async Task RegisterClient(IClusterClient client)
 {
-    var friend = client.GetGrain<IHello>(0);
-    var response = await friend.SayHello("Good morning HelloGrain!");
+    var registerGrain = client.GetGrain<IRegister>(0);
+    var response = await registerGrain.Register(0, "This an example client trying to register with the DAF.");
 
-    Console.WriteLine($"\n\n{response}\n\n");
+    Console.WriteLine($"The DAF answered: \n\n{response}\n\n");
 }
